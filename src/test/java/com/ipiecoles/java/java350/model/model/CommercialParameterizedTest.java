@@ -1,5 +1,7 @@
-package com.ipiecoles.java.java350.model;
+package com.ipiecoles.java.java350.model.model;
 
+import com.ipiecoles.java.java350.model.Commercial;
+import com.ipiecoles.java.java350.model.Note;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
