@@ -84,18 +84,6 @@ public class EmployeRepositoryTest {
         Assertions.assertThat(employeList).contains(pierreDurand);
         Assertions.assertThat(employeList).contains(rachidDurand);
     }
-    @Test
-    public void testFindByNomOrPrenomAllIgnoreCaseMulti(){
-        //given
-
-        //when
-        List<Employe> employeList = employeRepository.findByNomOrPrenomAllIgnoreCase("durand");
-        //then
-        Assertions.assertThat(employeList).isNotEmpty();
-        Assertions.assertThat(employeList).hasSize(2);
-        Assertions.assertThat(employeList).contains(pierreDurand);
-        Assertions.assertThat(employeList).contains(rachidDurand);
-    }
 
     @Test
     public void testFindByNomOrPrenomAllIgnoreCasePrenomMaj(){
