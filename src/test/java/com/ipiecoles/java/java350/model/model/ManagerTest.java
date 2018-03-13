@@ -47,4 +47,6 @@ public class ManagerTest {
         Assertions.assertThat(manager.getSalaire()).isEqualTo(salaireExpected);
         Assertions.assertThat(manager.getSalaire()).isGreaterThanOrEqualTo(salaire);
     }
+
+
 }
