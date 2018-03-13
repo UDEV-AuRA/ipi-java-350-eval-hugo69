@@ -14,6 +14,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+
 /**
  * Created by HCHARBONNEYR on 13/03/2018.
  */
@@ -47,6 +49,56 @@ public class ManagerServiceTest {
         ArgumentCaptor<Technicien> argTechnicien = ArgumentCaptor.forClass(Technicien.class);
         Mockito.verify(technicienRepository).save(argTechnicien.capture());
         Assertions.assertThat(argTechnicien.getValue().getManager()).isNull();
+    }
+
+    @Test
+    public void testAddTechnicienOK(){
+        //Given
+        Manager m = new Manager();
+        Technicien t = new Technicien();
+
+        Mockito.when(managerRepository.findOneWithEquipeById(1L)).thenReturn(m);
+        Mockito.when(managerRepository.save(Mockito.any(Manager.class))).then(returnsFirstArg());
+        Mockito.when(technicienRepository.findByMatricule("2L")).thenReturn(t);
+
+        //when
+        managerService.addTechniciens(1L,"2L");
+
+        //then
+        ArgumentCaptor<Manager> argManager = ArgumentCaptor.forClass(Manager.class);
+        Mockito.verify(managerRepository).save(argManager.capture());
+        Assertions.assertThat(argManager.getValue().getEquipe()).isNotEmpty();
+        Assertions.assertThat(argManager.getValue().getEquipe()).contains(t);
+
+        ArgumentCaptor<Technicien> argTechnicien = ArgumentCaptor.forClass(Technicien.class);
+        Mockito.verify(technicienRepository).save(argTechnicien.capture());
+        Assertions.assertThat(argTechnicien.getValue().getManager()).isNotNull();
+        Assertions.assertThat(argTechnicien.getValue().getManager()).isEqualTo(m);
+    }
+
+    @Test
+    public void testAddTechnicienNOTOK(){
+        //Given
+        Manager m = new Manager();
+        Technicien t = new Technicien();
+
+        Mockito.when(managerRepository.findOneWithEquipeById(1L)).thenReturn(m);
+        Mockito.when(managerRepository.save(Mockito.any(Manager.class))).then(returnsFirstArg());
+        Mockito.when(technicienRepository.findByMatricule("2L")).thenReturn(t);
+
+        //when
+        managerService.addTechniciens(1L,"2L");
+
+        //then
+        ArgumentCaptor<Manager> argManager = ArgumentCaptor.forClass(Manager.class);
+        Mockito.verify(managerRepository).save(argManager.capture());
+        Assertions.assertThat(argManager.getValue().getEquipe()).isNotEmpty();
+        Assertions.assertThat(argManager.getValue().getEquipe()).contains(t);
+
+        ArgumentCaptor<Technicien> argTechnicien = ArgumentCaptor.forClass(Technicien.class);
+        Mockito.verify(technicienRepository).save(argTechnicien.capture());
+        Assertions.assertThat(argTechnicien.getValue().getManager()).isNotNull();
+        Assertions.assertThat(argTechnicien.getValue().getManager()).isEqualTo(m);
     }
 
 }

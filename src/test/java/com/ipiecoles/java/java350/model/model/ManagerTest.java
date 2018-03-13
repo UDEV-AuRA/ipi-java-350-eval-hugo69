@@ -55,13 +55,13 @@ public class ManagerTest {
     })
     public void testAugmenterSalaire(Double salaire, Double pourcentage, Double salaireExpected){
         //given
-        HashSet<Technicien> test;
-        Manager manager = new Manager("nom","prenom","M11223",null, salaire , test = new HashSet<Technicien>());
+        HashSet<Technicien> equipeManager;
+        Manager manager = new Manager("nom","prenom","M11223",null, salaire , equipeManager = new HashSet<Technicien>());
         Technicien t1 = new Technicien("test1","test1","M12",null,1000d,2);
         Technicien t2 = new Technicien("test2","test2","M122",null,1200d,3);
-        test.add(t1);
-        test.add(t2);
-        manager.setEquipe(test);
+        equipeManager.add(t1);
+        equipeManager.add(t2);
+        manager.setEquipe(equipeManager);
         //when
         manager.augmenterSalaire(pourcentage);
 
