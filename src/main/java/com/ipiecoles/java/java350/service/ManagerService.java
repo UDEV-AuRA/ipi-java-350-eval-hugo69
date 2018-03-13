@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 
 @Service
-public class ManagerService {
+public class    ManagerService {
     @Autowired
     private ManagerRepository managerRepository;
 
