@@ -48,5 +48,27 @@ public class ManagerTest {
         Assertions.assertThat(manager.getSalaire()).isGreaterThanOrEqualTo(salaire);
     }
 
+    @Test //certain jeu de données ne passent pas a cause des double pour 1500 pourcentage de 0,1 on trouve pas 1650 mais 1650,00000002
+    @Parameters({
+            "1000 , 0.50 , 1500",
+            "1500 , 0.50 , 2250",
+    })
+    public void testAugmenterSalaire(Double salaire, Double pourcentage, Double salaireExpected){
+        //given
+        HashSet<Technicien> test;
+        Manager manager = new Manager("nom","prenom","M11223",null, salaire , test = new HashSet<Technicien>());
+        Technicien t1 = new Technicien("test1","test1","M12",null,1000d,2);
+        Technicien t2 = new Technicien("test2","test2","M122",null,1200d,3);
+        test.add(t1);
+        test.add(t2);
+        manager.setEquipe(test);
+        //when
+        manager.augmenterSalaire(pourcentage);
 
+        //then
+        Assertions.assertThat(manager.getSalaire()).isEqualTo(salaireExpected);
+        Assertions.assertThat(t1.getSalaire()).isEqualTo(1500d);
+        Assertions.assertThat(t2.getSalaire()).isEqualTo(1800d);
+
+    }
 }

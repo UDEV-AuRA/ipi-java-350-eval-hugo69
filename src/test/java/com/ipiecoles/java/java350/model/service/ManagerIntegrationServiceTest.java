@@ -122,7 +122,7 @@ public class ManagerIntegrationServiceTest   {
             Assertions.fail("cela doit fail!!");
         }catch (Exception e){
             Assertions.assertThat(e).isInstanceOf(EntityNotFoundException.class);
-            Assertions.assertThat(e).hasMessage("Impossible de trouver le technicien de matricule " + null);
+            Assertions.assertThat(e).hasMessage("Impossible de trouver le technicien de matricule "     + null);
         }
     }
 }
