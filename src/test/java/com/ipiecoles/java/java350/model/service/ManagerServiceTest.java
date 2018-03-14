@@ -1,5 +1,6 @@
 package com.ipiecoles.java.java350.model.service;
 
+import com.ipiecoles.java.java350.model.Employe;
 import com.ipiecoles.java.java350.model.Manager;
 import com.ipiecoles.java.java350.model.Technicien;
 import com.ipiecoles.java.java350.repository.ManagerRepository;
@@ -13,6 +14,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import javax.persistence.EntityNotFoundException;
 
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
@@ -77,28 +80,43 @@ public class ManagerServiceTest {
     }
 
     @Test
-    public void testAddTechnicienNOTOK(){
+    public void testAddTechnicienNOTOKTechnicien(){
+        //Given
+        Manager m = new Manager();
+        Technicien t = new Technicien();
+
+        Mockito.when(managerRepository.findOneWithEquipeById(1L)).thenReturn(null);
+        //Mockito.when(managerRepository.save(Mockito.any(Manager.class))).then(returnsFirstArg());
+        //Mockito.when(technicienRepository.findByMatricule("2L")).thenReturn(null);
+
+        //when
+        try {
+            managerService.addTechniciens(1L, "2L");
+            Assertions.fail("Cela aurait dû planter");
+        }catch (Exception e){
+            Assertions.assertThat(e).isInstanceOf(EntityNotFoundException.class);
+            Assertions.assertThat(e).hasMessage("Impossible de trouver le manager d'identifiant 1");
+            //Assertions.assertThat(e).hasMessage("Impossible de trouver le technicien de matricule 2L");
+        }
+    }
+    @Test
+    public void testAddTechnicienNOTOKManager(){
         //Given
         Manager m = new Manager();
         Technicien t = new Technicien();
 
         Mockito.when(managerRepository.findOneWithEquipeById(1L)).thenReturn(m);
         Mockito.when(managerRepository.save(Mockito.any(Manager.class))).then(returnsFirstArg());
-        Mockito.when(technicienRepository.findByMatricule("2L")).thenReturn(t);
+        Mockito.when(technicienRepository.findByMatricule("2L")).thenReturn(null);
 
         //when
-        managerService.addTechniciens(1L,"2L");
-
-        //then
-        ArgumentCaptor<Manager> argManager = ArgumentCaptor.forClass(Manager.class);
-        Mockito.verify(managerRepository).save(argManager.capture());
-        Assertions.assertThat(argManager.getValue().getEquipe()).isNotEmpty();
-        Assertions.assertThat(argManager.getValue().getEquipe()).contains(t);
-
-        ArgumentCaptor<Technicien> argTechnicien = ArgumentCaptor.forClass(Technicien.class);
-        Mockito.verify(technicienRepository).save(argTechnicien.capture());
-        Assertions.assertThat(argTechnicien.getValue().getManager()).isNotNull();
-        Assertions.assertThat(argTechnicien.getValue().getManager()).isEqualTo(m);
+        try {
+            managerService.addTechniciens(1L, "2L");
+            Assertions.fail("Cela aurait dû planter");
+        }catch (Exception e){
+            Assertions.assertThat(e).isInstanceOf(EntityNotFoundException.class);
+            //Assertions.assertThat(e).hasMessage("Impossible de trouver le manager d'identifiant 4");
+            Assertions.assertThat(e).hasMessage("Impossible de trouver le technicien de matricule 2L");
+        }
     }
-
 }
