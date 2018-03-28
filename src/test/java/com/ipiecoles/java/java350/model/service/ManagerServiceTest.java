@@ -17,6 +17,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import javax.persistence.EntityNotFoundException;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 
 /**
@@ -32,6 +35,8 @@ public class ManagerServiceTest {
 
     @Mock
     TechnicienRepository technicienRepository;
+
+    private HashSet<Technicien> equipe = new HashSet<>();
 
     @Test
     public void testDeleteTechniciens(){
@@ -80,7 +85,7 @@ public class ManagerServiceTest {
     }
 
     @Test
-    public void testAddTechnicienNOTOKTechnicien(){
+    public void testAddTechnicienNOTOKManager(){
         //Given
         Manager m = new Manager();
         Technicien t = new Technicien();
@@ -100,7 +105,7 @@ public class ManagerServiceTest {
         }
     }
     @Test
-    public void testAddTechnicienNOTOKManager(){
+    public void testAddTechnicienNOTOKTech(){
         //Given
         Manager m = new Manager();
         Technicien t = new Technicien();
@@ -117,6 +122,31 @@ public class ManagerServiceTest {
             Assertions.assertThat(e).isInstanceOf(EntityNotFoundException.class);
             //Assertions.assertThat(e).hasMessage("Impossible de trouver le manager d'identifiant 4");
             Assertions.assertThat(e).hasMessage("Impossible de trouver le technicien de matricule 2L");
+        }
+    }
+
+    //Je voulais tester le cas ou le technicien possède déjà un manager (malheureusement je ne penses pas traiter tous les cas) ----
+    @Test
+    public void testAddTechnicienTechWithManager(){
+        Manager manager1 = new Manager("bob","john","1L",null,1300d, equipe);
+        Manager manager2 = new Manager("richard","martin","2L",null,1400d,equipe);
+        Technicien technicien = new Technicien();
+
+        Mockito.when(managerRepository.findOneWithEquipeById(1L)).thenReturn(manager1);
+        Mockito.when(managerRepository.findOneWithEquipeById(2L)).thenReturn(manager2);
+        Mockito.when(managerRepository.save(Mockito.any(Manager.class))).then(returnsFirstArg());
+        Mockito.when(technicienRepository.findByMatricule("3L")).thenReturn(technicien);
+
+        managerService.addTechniciens(1L,"3L");
+
+        try{
+            managerService.addTechniciens(2L, "3L");
+            Assertions.fail("Cela aurait dû planter");
+        }catch(Exception e) {
+            Assertions.assertThat(e).isInstanceOf(IllegalArgumentException.class);
+            //Assertions.assertThat(e).hasMessage("Impossible de trouver le manager d'identifiant 4");
+            Assertions.assertThat(e).hasMessage("Le technicien de matricule 3L a déjà un manager : " + technicien.getManager().getPrenom() + " " + technicien.getManager().getNom()
+                    + " (matricule " + technicien.getManager().getMatricule() + ")");
         }
     }
 }
